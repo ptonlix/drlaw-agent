@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "drlaw-agent"
+version = "0.1.0"
+description = ""
+authors = ["ptonlix <260431910@qq.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+colorama = "^0.4.6"
+langchain = "^0.2.5"
+langchain-openai = "^0.1.8"
+langchain-community = "^0.2.5"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
