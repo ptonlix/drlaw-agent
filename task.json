@@ -1,0 +1,11 @@
+{
+  "index": 1,
+  "query": "我国法律监督体系的构成",
+  "model": "glm-4",
+  "temperature": 0.1,
+  "recursion_limit": 20,
+  "errlog": "./log",
+  "result_output_dir": "./dataset",
+  "question_file": "./dataset/question.jsonl",
+  "verbose": true
+}

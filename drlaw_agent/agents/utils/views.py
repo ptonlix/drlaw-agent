@@ -3,11 +3,11 @@ from enum import Enum
 
 
 class AgentColor(Enum):
-    RESEARCHER = Fore.LIGHTBLUE_EX
+    TOOLSELECT = Fore.LIGHTBLUE_EX
     EXECUTOR = Fore.YELLOW
     ANSWERER = Fore.LIGHTGREEN_EX
     PUBLISHER = Fore.MAGENTA
-    CHECKER = Fore.CYAN
+    REVIEWER = Fore.CYAN
     MASTER = Fore.LIGHTYELLOW_EX
 
 
