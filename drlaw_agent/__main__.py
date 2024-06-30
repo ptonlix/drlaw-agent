@@ -32,7 +32,7 @@ async def main():
         queries = read_jsonl(question_file)
         for query in tqdm(queries):
             # 如果中断，可以从这里开始
-            if query["id"] < 228:
+            if query["id"] < 211:
                 continue
             task["index"] = query["id"]
             task["query"] = query["question"]

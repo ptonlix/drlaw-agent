@@ -8,6 +8,39 @@ from drlaw_agent.utils import convert_to_float, convert_to_str, intersection_dic
 from drlaw_agent.services.base import re_get_full_name, _get_full_name
 
 
+def get_holding_sub_company(company_name: str) -> str:
+    """
+    根据公司的公司名称，获取该公司控股子公司的数据,包含数量
+    """
+    return get_company_investment_information(company_name, "50.0")
+
+
+def get_sub_company_of_largest_holding_ratio(company_name: str) -> str:
+    """
+    根据公司的公司名称，获取该公司最高控股比例的子公司，包含该与子公司的关系和投资金额
+    """
+    sub_company = get_sub_company_info_service(company_name)
+    sub_company_obj = json.loads(sub_company)
+    sub_company_count = len(sub_company_obj)
+    if sub_company_count == 0:
+        return f"该{company_name}的子公司总数为:{sub_company_count}\n该公司的最高控股比例的子公司信息如下:\n无\n"
+
+    sorted_list = sorted(
+        sub_company_obj,
+        key=lambda x: convert_to_float(x["上市公司参股比例"]),
+        reverse=True,
+    )
+
+    max_value = sorted_list[0]["上市公司参股比例"]
+
+    max_value_list = [d for d in sorted_list if d["上市公司参股比例"] == max_value]
+
+    for listed_company_info in max_value_list:
+        del listed_company_info["关联上市公司全称"]
+
+    return f"该{company_name}的子公司总数为:{sub_company_count}\n该公司的最高控股比例的子公司信息如下:\n{max_value_list}\n"
+
+
 def get_company_investment_information(
     company_name: str, holding_ratio: str = "0", investment_amount: str = "0万"
 ) -> str:
@@ -23,19 +56,20 @@ def get_company_investment_information(
     parent_company = get_parent_company_info_service(company_name)
     # 查询不到母公司信息
     if "母公司名称" not in parent_company:
-        parent_company = ""
+        parent_company = "无"
     sub_company = get_sub_company_info_service(company_name)
     sub_company_obj = json.loads(sub_company)
     sub_company_count = len(sub_company_obj)
 
     sub_company_str = (
-        f"子公司总数量为{sub_company_count}家,具体投资信息:{sub_company_obj},"
+        f"子公司总数量为{sub_company_count}家,具体投资信息:{sub_company_obj}\n"
     )
 
     # 过滤出符合条件的子公司
     qualified_companies_by_ratio = []
     qualified_companies_by_investment = []
     qualified_companies = []
+    holding_ratio = "99.0" if holding_ratio == "100.0" else holding_ratio
     if holding_ratio != "0":
         qualified_companies_by_ratio = [
             company
@@ -46,6 +80,7 @@ def get_company_investment_information(
         ]
         qualified_companies = qualified_companies_by_ratio
 
+    investment_amount = "0万" if investment_amount == "0" else investment_amount
     if investment_amount != "0万":
         qualified_companies_by_investment = [
             company
@@ -63,13 +98,14 @@ def get_company_investment_information(
 
     count = len(qualified_companies)
     sub_company_str_detail = (
-        f"{company_name}控股比例超过{holding_ratio}并且投资金额大于{investment_amount}的子公司数量为{count}家,具体投资信息如下:{qualified_companies}"
+        f"{company_name}控股比例超过{holding_ratio}并且投资金额大于{investment_amount}的子公司数量为{count}家,具体投资信息如下:{qualified_companies}\n"
         if holding_ratio != "0" or investment_amount != "0万"
-        else sub_company_str
+        else ""
     )
 
     return (
         f"{company_name}投资信息如下:\n母公司投资信息:{parent_company}\n"
+        + sub_company_str
         + sub_company_str_detail
     )
 
@@ -120,7 +156,7 @@ def get_parent_company_info_service(company_name: str) -> str:
     if not rsp:
         company_name = re_get_full_name(company_name)
         rsp = get_listed_company_info(company_name)
-    ret = {"公司名称": company_name}
+    ret = {"公司名称": company_name, "母公司名称": "无"}
     if "关联上市公司全称" in rsp:
         ret["母公司名称"] = rsp["关联上市公司全称"]
     if "上市公司参股比例" in rsp:
@@ -134,6 +170,7 @@ def get_parent_company_info_service(company_name: str) -> str:
 def get_sub_company_name_service(company_name: str) -> str:
     """
     根据母公司的公司名称，获得该公司旗下的所有子公司的名称。
+    注意:涉及到查询参股比例时，应当使用 get_company_investment_information
     """
     company_name = _get_full_name(company_name)
     rsp = search_company_name_by_super_info("关联上市公司全称", company_name)
@@ -203,6 +240,7 @@ def count_sub_company_service(
     qualified_companies_by_ratio = []
     qualified_companies_by_investment = []
     qualified_companies = []
+    holding_ratio = "99.0" if holding_ratio == "100.0" else holding_ratio
     if holding_ratio != "0":
         qualified_companies_by_ratio = [
             company
@@ -213,6 +251,7 @@ def count_sub_company_service(
         ]
         qualified_companies = qualified_companies_by_ratio
 
+    investment_amount = "0万" if investment_amount == "0" else investment_amount
     if investment_amount != "0万":
         qualified_companies_by_investment = [
             company
@@ -228,9 +267,11 @@ def count_sub_company_service(
             qualified_companies_by_ratio, qualified_companies_by_investment
         )
 
+    perfix = "控股" if holding_ratio == "50.0" else ""
+
     count = len(qualified_companies)
     sub_company_str = (
-        f"{company_name}控股比例超过{holding_ratio}并且投资金额大于{investment_amount}的子公司数量为{count}家,具体投资信息如下:{qualified_companies}"
+        f"{company_name}控股比例超过{holding_ratio}并且投资金额大于{investment_amount}的{perfix}子公司数量为{count}家,具体投资信息如下:{qualified_companies}"
         if holding_ratio != "0" or investment_amount != "0万"
         else "无"
     )
@@ -267,7 +308,10 @@ def search_company_name_by_super_info_service(key: str, value: str) -> str:
 
 
 def query_total_amount_invested_in_subsidiaries(company_name: str) -> str:
-    """根据上市公司的公司名称、公司简称或英文名称，查询该公司在子公司投资的总金额。"""
+    """
+    根据上市公司的公司名称、公司简称或英文名称，查询该公司在子公司投资的总金额。
+    注意:如果要查询公司的投资详情, 应当使用 get_sub_company_of_largest_holding_ratio
+    """
     full_name = _get_full_name(company_name)
     rsp = search_company_name_by_super_info("关联上市公司全称", full_name)
     if not rsp:
@@ -319,12 +363,19 @@ def search_company_name_by_stock_bref(company_name: str) -> str:
 
 
 if __name__ == "__main__":
-    # print(get_company_investment_information("湖北振华化学股份有限公司"))
+    # print(get_sub_company_of_largest_holding_ratio("弘元绿色能源股份有限公司"))
+    # print(get_company_investment_information("威胜信息技术股份有限公司公司"))
     # print(count_wholly_owned_sub_company("烟台北方安德利果汁股份有限公司"))
-    # print(get_sub_company_info_service("深圳市大族数控科技股份有限公司"))
-    # print(get_parent_company_info_service("象山激智新材料有限公司"))
-    print(count_sub_company_service("北京当升材料科技股份有限公司", "50.0", "5000万"))
-    # print(count_sub_company_service("金宏气体股份有限公司", "50.0"))
+    # print(get_company_investment_information("青岛惠城环保科技集团股份有限公司"))
+    # print(
+    #     query_total_amount_invested_in_subsidiaries("深圳信测标准技术服务股份有限公司")
+    # )
+
+    # print(get_parent_company_info_service("广汇能源股份有限公司"))
+    # print(get_sub_company_of_largest_holding_ratio("天能电池集团股份有限公司"))
+    # print(get_sub_company_name_service("凯盛新材"))
+    # print(count_sub_company_service("福安药业(集团)股份有限公司"))
+    print(count_sub_company_service("福莱特玻璃集团股份有限公司", "50.0", "5000万"))
     # 上海百钠新能源科技有限公司、伊春碧水环保工程有限公司、浙江天能物联网科技有限公司
     # print(
     #     get_multiple_parent_company_info_service(
@@ -335,5 +386,17 @@ if __name__ == "__main__":
     #                 "浙江天能物联网科技有限公司",
     #             ]
     #         }
+    #     )
+    # )
+
+    # print(
+    #     search_company_name_by_super_info_service(
+    #         "关联上市公司全称", "福安药业(集团)股份有限公司"
+    #     )
+    # )
+
+    # print(
+    #     search_company_name_by_super_info_service(
+    #         "关联上市公司全称", "福安药业（集团）股份有限公司"
     #     )
     # )

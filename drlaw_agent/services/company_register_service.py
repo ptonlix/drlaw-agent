@@ -4,7 +4,7 @@ from drlaw_agent.apis import (
     search_company_name_by_register,
     search_company_and_registered_capital_by_industry,
 )
-
+from drlaw_agent.utils import convert_to_float
 from drlaw_agent.services.base import re_get_full_name, _get_full_name
 
 
@@ -68,9 +68,20 @@ def search_company_name_by_register_service(key: str, value: str) -> str:
 def search_cnr_by_industry_service(industry_name: str) -> str:
     """根据行业名称查询属于该行业的公司及其注册资本。"""
     rsp = search_company_and_registered_capital_by_industry(industry_name)
-    json_str = json.dumps(rsp, ensure_ascii=False)
-    return json_str
+    count = len(rsp)
+    if rsp:
+        sorted_list = sorted(
+            rsp,
+            key=lambda x: convert_to_float(x["注册资本"]),
+            reverse=True,
+        )
+
+        top_value = sorted_list[:3]
+
+    return f"该{industry_name}注册资本最大前3公司为:{top_value}\n该行业所属全部公司详细信息如下:\n公司数量:{count}家\n 公司详情:{rsp}\n"
 
 
 if __name__ == "__main__":
-    print(search_cnr_by_industry_service("皮革、毛皮、羽毛及其制品和制鞋业"))
+    print(search_cnr_by_industry_service("电气机械和器材制造业"))
+    # print(search_company_name_by_registration_number_service("320512400000458"))
+    # print(get_company_register_service("健帆生物科技集团股份有限公司"))

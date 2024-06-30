@@ -9,17 +9,6 @@ import importlib
 from colorama import Fore, Style
 from drlaw_agent.agents.utils.views import print_agent_output
 
-TOOL_CALL_ERROR_MESSAGE = """
-用户查询问题:
-我想了解天味食品的法定代表人、注册地和电子邮箱分别为何？
-
-注意: 请不要直接返回如下工具调用信息给用户,应该需要通过你自身tool_calls来传递
-company_name_retriever_by_info
-```python
-tool_call()
-```
-"""
-
 
 class ExecutorAgent:
 
@@ -37,7 +26,15 @@ class ExecutorAgent:
         toolkits = importlib.import_module("drlaw_agent.agents.toolkits")
 
         agent_tools = [getattr(toolkits, tool) for tool in tools]
-        system_message = "你是一个擅长回答金融和法律有关的问题的专家，会通过调用工具来检索信息对问题作出回答，必须回答不能放弃。如果是开放性问题,请结合自身知识进行回答。"
+        system_message = """
+你是一个擅长回答金融和法律有关的问题的专家，会通过调用工具来检索信息对问题作出回答，必须回答不能放弃。
+如果是开放性问题,请结合自身知识进行回答。
+你需要掌握的背景知识:
+1.控股子公司是母公司控股比例需超过50%的子公司
+
+你需要遵循以下注意事项：
+1.输出的信息，需要遵循上述背景知识
+"""
 
         model = ChatOpenAI(model=model, temperature=temperature, max_tokens=8192)
         app = create_react_agent(model, agent_tools, system_message, debug=True)
@@ -104,5 +101,6 @@ class ExecutorAgent:
             print(f"{Fore.RED}Error in answer questiong {query}: {e}{Style.RESET_ALL}")
             return {
                 "task": task,
+                "iferror": True,
                 "reselect_num": research_state.get("reselect_num"),
             }

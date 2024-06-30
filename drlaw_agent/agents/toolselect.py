@@ -1,6 +1,5 @@
 from colorama import Fore, Style
 
-from drlaw_agent.agents import answer
 from .utils.views import print_agent_output
 from datetime import datetime
 import re
@@ -70,13 +69,43 @@ class ToolSelectAgent:
     ) -> List[BaseTool]:
         return [tool for tool in tools if tool.name not in del_tools]
 
+    def check_tools(self, select_tools: List[str]) -> List[str]:
+        # 检查如果出现多个get_parent_company_info_getter 时合并成一个get_multiple_parent_company_info_getter
+        if select_tools.count("get_parent_company_info_getter") > 1:
+            while "get_parent_company_info_getter" in select_tools:
+                select_tools.remove("get_parent_company_info_getter")
+            select_tools.append("get_multiple_parent_company_info_getter")
+
+        # 检查如果出现get_sub_company_info_getter,换成投资信息查询get_company_investment_information_getter
+        if "get_sub_company_info_getter" in select_tools:
+            while "get_sub_company_info_getter" in select_tools:
+                select_tools.remove("get_sub_company_info_getter")
+            select_tools.append("get_company_investment_information_getter")
+
+        # 检查如果出现get_sub_company_of_largest_holding_ratio_getter，则不需要get_all_sub_company_counter
+        if (
+            "get_sub_company_of_largest_holding_ratio_getter" in select_tools
+            and "get_all_sub_company_counter" in select_tools
+        ):
+            select_tools.remove("get_all_sub_company_counter")
+
+        return select_tools
+
     async def tool_select(self, research_state: dict):
         task = research_state.get("task")
         query = task.get("query")
 
-        now_toolkits = research_state.get("toolkits", [])
-        now_answer = research_state.get("answer", "")
-        review_reason = research_state.get("review_reason", "")
+        now_toolkits = (
+            research_state.get("toolkits") if research_state.get("toolkits") else []
+        )
+        now_answer = (
+            research_state.get("answer") if research_state.get("answer") else ""
+        )
+        review_reason = (
+            research_state.get("review_reason")
+            if research_state.get("review_reason")
+            else ""
+        )
 
         # parser = PydanticOutputParser(pydantic_object=NeedTools)
         prompt = ChatPromptTemplate.from_messages(
@@ -95,6 +124,7 @@ class ToolSelectAgent:
         need_tools = (
             prompt
             | ChatOpenAI(model=task.get("model"), temperature=0.1)
+            # | ChatOpenAI(model="glm-4-air", temperature=0.1)
             | StrOutputParser()
         )
         print_agent_output("正在从工具库选取工具", agent="TOOLSELECT")
@@ -116,6 +146,8 @@ class ToolSelectAgent:
                 for tool in toolkits
                 if tool in self.get_toolkit_name_list(self.all_tools)
             ]
+            # 为大模型打补丁
+            toolkits = self.check_tools(toolkits)
         else:
             toolkits = []
 
@@ -123,11 +155,12 @@ class ToolSelectAgent:
             f"{Fore.GREEN}Question:\n{query}\n\nSelect Tool Reason: \n{reasoning}\n\n Select Tool:\n {toolkits}{Style.RESET_ALL}"
         )
 
+        now_toolkits.extend(toolkits)
         reselect_num = research_state.get("reselect_num")
         print(reselect_num)
         return {
             "task": task,
             "tool_select_context": reasoning,
-            "toolkits": toolkits,
+            "toolkits": now_toolkits,
             "reselect_num": reselect_num if reselect_num else 0,
         }

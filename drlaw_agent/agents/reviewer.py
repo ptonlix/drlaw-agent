@@ -24,8 +24,11 @@ USER_MESSAGE = """
 当前回答:
 {answer}
 
-你是一个专业的金融和法律信息检查员,需要分析用户输入的查询问题,检查当前回答是否能解答完全用户的问题
-如果能请回复“可以”，如果不能，请回复“不可以”，并阐述理由
+你是一个专业的金融和法律信息检查员,需要分析用户输入的查询问题,检查当前回答是否已经解答用户的问题
+请遵循以下注意事项
+1.你只需要关注形式上是否已经解答即可，不需要理会解答是否充分
+2.用户的问题都是可以解答的，当出现“抱歉了”,"无法回答"等相关信息时，说明未能从形式上解答用户问题，应该返回未解答
+如果能请回复“已解答”，如果不能，请回复“未解答”，并阐述理由
 """
 
 
@@ -55,6 +58,17 @@ class ReviewerAgent:
         toolkits = research_state.get("toolkits")
         tool_select_context = research_state.get("tool_select_context")
 
+        if (
+            research_state.get("reselect_num") + 1 > 2
+        ):  # 循环选择工具超过2次，则失败直接输出
+            return {
+                "task": task,
+                "answer": answer,
+                "review": True,
+                "iferror": True,
+                "errorinfo": "失败:重新选择选择工具超过2次",
+            }
+
         prompt = ChatPromptTemplate.from_messages(
             [
                 ("human", USER_MESSAGE),
@@ -76,9 +90,7 @@ class ReviewerAgent:
             f"{Fore.GREEN}Question:\n{query}\n Answer:\n{answer}\n Review Result:\n{review_result} {Style.RESET_ALL}"
         )
 
-        review_bool = not ("不可以" in review_result)
-
-        reselect_num = research_state.get("reselect_num") + 1
+        review_bool = not ("未解答" in review_result)
 
         return {
             "task": task,
@@ -88,5 +100,5 @@ class ReviewerAgent:
             "review": review_bool,
             "review_reason": review_result,
             "reselect_num": research_state.get("reselect_num") + 1,
-            "iferror": True if reselect_num > 2 else False,
+            "iferror": False,
         }

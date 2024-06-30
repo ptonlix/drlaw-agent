@@ -15,11 +15,14 @@ from .sub_company_info_tools import (
     get_parent_company_info_getter,
     get_sub_company_name_getter,
     get_all_sub_company_counter,
-    get_company_name_retriever_by_super_info,
+    # get_company_name_retriever_by_super_info,
     get_total_amount_invested_in_subsidiaries_getter,
     search_company_name_by_stock_bref_getter,
     get_company_investment_information_getter,
     get_multiple_parent_company_info_getter,
+    get_sub_company_info_getter,
+    get_sub_company_of_largest_holding_ratio_getter,
+    get_holding_sub_company_getter,
     sub_com_info_tools,
 )
 

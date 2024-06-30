@@ -1,7 +1,7 @@
 {
   "index": 1,
-  "query": "我国法律监督体系的构成",
-  "model": "glm-4",
+  "query": "通过案号(2019)鄂0103民初12292号，可否请您协助查询一下该判决所依据的法律条文？",
+  "model": "glm-4-0520",
   "temperature": 0.1,
   "recursion_limit": 20,
   "errlog": "./log",

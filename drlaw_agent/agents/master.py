@@ -19,19 +19,12 @@ from drlaw_agent.agents.reviewer import ReviewerAgent
 
 
 def check_execution_effect(research_state: dict):
-    reselect_num = research_state.get("reselect_num")
     iferror = research_state.get("iferror")
 
     if iferror:
         return "answerer"
-
-    if reselect_num <= 0:
-        return "publish"
-
-    if 0 < reselect_num <= 2:
-        return "reselect"
     else:
-        return "answerer"
+        return "reviewer"
 
 
 def check_tool_select(research_state: dict):
@@ -41,6 +34,16 @@ def check_tool_select(research_state: dict):
         return "answerer"
     else:
         return "executor"
+
+
+def check_review_effect(research_state: dict):
+
+    review = research_state.get("review")
+
+    if review:
+        return "publish"
+    else:
+        return "reselect"
 
 
 class DrlawAgent:
@@ -74,15 +77,19 @@ class DrlawAgent:
             {"answerer": "answerer", "executor": "executor"},
         )
 
-        # workflow.add_conditional_edges(
-        #     "executor",
-        #     check_execution_effect,
-        #     {"answerer": "answerer", "reselect": "toolselect", "publish": "publisher"},
-        # )
+        workflow.add_conditional_edges(
+            "executor",
+            check_execution_effect,
+            {"answerer": "answerer", "reviewer": "reviewer"},
+        )
 
-        workflow.add_edge("executor", "reviewer")
         workflow.add_edge("answerer", "reviewer")
-        workflow.add_edge("reviewer", "publisher")
+
+        workflow.add_conditional_edges(
+            "reviewer",
+            check_review_effect,
+            {"publish": "publisher", "reselect": "toolselect"},
+        )
 
         # set up start and end nodes
         workflow.add_edge("publisher", END)

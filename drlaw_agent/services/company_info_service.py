@@ -100,5 +100,6 @@ def search_company_name_by_info_service(key: str, value: str) -> str:
 
 
 if __name__ == "__main__":
-    print(get_company_info_service("熊猫乳品集团股份有限公司"))
-    # print(count_company_by_industry_service("医药制造业"))
+    print(get_company_info_service("深圳新宙邦科技股份有限公司"))
+    # print(search_company_name_by_info_service("酒、饮料和精制茶制造业"))
+    # print(count_company_by_industry_service("专用设备制造业"))

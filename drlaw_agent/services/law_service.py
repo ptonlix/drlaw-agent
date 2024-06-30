@@ -8,6 +8,7 @@ from drlaw_agent.apis import (
 def get_amount_involved_by_case_num_service(case_num: str) -> str:
     """
     根据案号获得该案的涉案金额
+    注意:涉及到两个案件涉案金额大小比较，推荐使用 compare_amount_involved_by_two_case_num
     输入参数：案号
     例如：(2020)赣0191民初1045号
     """
@@ -173,12 +174,15 @@ def count_defendant_lawyer_service(defendant: str) -> str:
 
 if __name__ == "__main__":
 
-    # print(get_amount_involved_by_case_num_service("（2020）苏0412民初6970号"))
+    # print(get_amount_involved_by_case_num_service("(2020)沪0104民初14148号案件"))
     # print(get_legal_basis_by_case_num_service("(2019)鄂0103民初12292号"))
-    print(
-        compare_amount_involved_by_two_case_num_service(
-            "(2020)赣0191民初1045号", "(2019)晋0402民初918号"
-        )
-    )
+    # print(
+    #     compare_amount_involved_by_two_case_num_service(
+    #         "(2020)赣0191民初1045号", "(2020)桂0103民初6133号"
+    #     )
+    # )
 
-    print(get_legal_document_service("(2019)鄂01民初4724号"))
+    # print(get_legal_document_service("(2019)鄂01民初4724号"))
+    # print(count_defendant_lawyer_service("新城控股集团股份有限公司"))
+    # print(count_plaintiff_lawyer_service("光明乳业股份有限公司"))
+    print(count_case_number_by_cause_service("不正当竞争纠纷"))

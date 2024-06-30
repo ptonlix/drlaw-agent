@@ -12,6 +12,7 @@ class PublisherAgent:
         errlog = task.get("errlog")
         result_output_dir = task.get("result_output_dir")
         answer = research_state.get("answer")
+        toolkits = research_state.get("toolkits")
         print_agent_output(
             output=f"Publishing final question answer:\n{answer}\n",
             agent="PUBLISHER",
@@ -21,6 +22,7 @@ class PublisherAgent:
             "id": task.get("index"),
             "question": task.get("query"),
             "answer": answer,
+            "toolkits": toolkits,
         }
         with jsonlines.open(result_output_dir + "/result.json", "a") as json_file:
             json_file.write(content)

@@ -5,11 +5,14 @@ from drlaw_agent.services.sub_company_info_service import (
     get_parent_company_info_service,
     get_sub_company_name_service,
     count_sub_company_service,
-    search_company_name_by_super_info_service,
+    # search_company_name_by_super_info_service,
     query_total_amount_invested_in_subsidiaries,
     search_company_name_by_stock_bref,
     get_company_investment_information,
     get_multiple_parent_company_info_service,
+    get_sub_company_info_service,
+    get_sub_company_of_largest_holding_ratio,
+    get_holding_sub_company,
 )
 
 
@@ -44,11 +47,11 @@ get_sub_company_name_getter = StructuredTool.from_function(
     args_schema=CompanyNameInput,
 )
 
-# get_sub_company_info_getter = StructuredTool.from_function(
-#     func=get_sub_company_info_service,
-#     name="get_sub_company_info_getter",
-#     args_schema=CompanyNameInput,
-# )
+get_sub_company_info_getter = StructuredTool.from_function(
+    func=get_sub_company_info_service,
+    name="get_sub_company_info_getter",
+    args_schema=CompanyNameInput,
+)
 
 get_all_sub_company_counter = StructuredTool.from_function(
     func=count_sub_company_service,
@@ -56,11 +59,11 @@ get_all_sub_company_counter = StructuredTool.from_function(
     args_schema=CompanyInvestment,
 )
 
-get_company_name_retriever_by_super_info = StructuredTool.from_function(
-    func=search_company_name_by_super_info_service,
-    name="get_company_name_retriever_by_super_info",
-    args_schema=KeyValueInput,
-)
+# get_company_name_retriever_by_super_info = StructuredTool.from_function(
+#     func=search_company_name_by_super_info_service,
+#     name="get_company_name_retriever_by_super_info",
+#     args_schema=KeyValueInput,
+# )
 
 get_total_amount_invested_in_subsidiaries_getter = StructuredTool.from_function(
     func=query_total_amount_invested_in_subsidiaries,
@@ -85,15 +88,29 @@ get_multiple_parent_company_info_getter = StructuredTool.from_function(
     args_schema=CompanyMultipleNameInput,
 )
 
+get_sub_company_of_largest_holding_ratio_getter = StructuredTool.from_function(
+    func=get_sub_company_of_largest_holding_ratio,
+    name="get_sub_company_of_largest_holding_ratio_getter",
+    args_schema=CompanyNameInput,
+)
+
+get_holding_sub_company_getter = StructuredTool.from_function(
+    func=get_holding_sub_company,
+    name="get_holding_sub_company_getter",
+    args_schema=CompanyNameInput,
+)
+
 
 sub_com_info_tools = [
     get_parent_company_info_getter,
     get_multiple_parent_company_info_getter,
     get_sub_company_name_getter,
-    # get_sub_company_info_getter,
+    get_sub_company_info_getter,
     get_all_sub_company_counter,
-    get_company_name_retriever_by_super_info,
+    # get_company_name_retriever_by_super_info,
     get_total_amount_invested_in_subsidiaries_getter,
     search_company_name_by_stock_bref_getter,
     get_company_investment_information_getter,
+    get_sub_company_of_largest_holding_ratio_getter,
+    get_holding_sub_company_getter,
 ]

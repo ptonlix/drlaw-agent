@@ -268,3 +268,12 @@ def search_company_and_registered_capital_by_industry(industry_name: str):
         }
         company_and_registered_capital_list.append(cnr_info)
     return company_and_registered_capital_list
+
+
+if __name__ == "__main__":
+    print(
+        search_company_name_by_super_info(
+            "关联上市公司全称",
+            "福安药业（集团）股份有限公司",
+        )
+    )
