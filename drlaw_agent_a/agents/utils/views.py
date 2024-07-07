@@ -9,7 +9,6 @@ class AgentColor(Enum):
     PUBLISHER = Fore.MAGENTA
     REVIEWER = Fore.CYAN
     MASTER = Fore.LIGHTYELLOW_EX
-    PROSECUTER = Fore.BLUE
 
 
 def print_agent_output(output: str, agent: str = "RESEARCHER"):
