@@ -2,7 +2,9 @@ from langchain_openai import ChatOpenAI
 from langgraph.prebuilt import create_react_agent
 from colorama import Fore, Style
 from drlaw_agent.agents.utils.views import print_agent_output
+from drlaw_agent.agents.utils.funchandle import parse_and_call_function
 from drlaw_agent.agents.toolkits.legal import legal_info_tools
+from langgraph.checkpoint.memory import MemorySaver
 
 
 class LegalerAgent:
@@ -12,7 +14,7 @@ class LegalerAgent:
     """
 
     def __init__(self):
-        pass
+        self.memory = MemorySaver()
 
     async def run(self, drlaw_state: dict):
         print_agent_output("案件信息助理正在查询信息", agent="LEGALER")
@@ -41,15 +43,28 @@ class LegalerAgent:
                 ],
             },
         )
-        app = create_react_agent(model, legal_info_tools, system_message, debug=True)
+
+        app = create_react_agent(
+            model,
+            legal_info_tools,
+            system_message,
+            debug=True,
+            checkpointer=self.memory,
+        )
 
         try:
-            messages = app.invoke(
-                {"messages": [("human", query)]},
-                {"recursion_limit": recursion_limit},
-            )
+            config = {
+                "configurable": {"thread_id": query},
+                "recursion_limit": recursion_limit,
+            }
+            messages = app.invoke({"messages": [("human", query)]}, config=config)
             answer = messages["messages"][-1].content
             if "tool_call" in answer:
+                tool_result = parse_and_call_function(answer, legal_info_tools)
+                messages = app.invoke(
+                    {"messages": [("human", tool_result)]}, config=config
+                )
+                answer = messages["messages"][-1].content
                 raise Exception(answer)
             return {
                 "messages": [

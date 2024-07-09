@@ -134,6 +134,7 @@ class AssistanterAgent:
         return {
             "messages": [("ai", agent_info)],
             "agent_type": agent_type,
+            "call_agents": [agent_type],
             "sub_query": [sub_query.strip()],
             "answer": answer.strip(),
         }

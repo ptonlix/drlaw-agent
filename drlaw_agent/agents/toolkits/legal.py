@@ -59,3 +59,14 @@ legal_info_tools = [
     get_legal_document_about_accused_service_tool,
     get_legal_document_about_amount_service_tool,
 ]
+
+
+if __name__ == "__main__":
+    from drlaw_agent.agents.utils.funchandle import parse_and_call_function
+
+    # 示例字符串
+    docstring = """get_legal_document_about_accused_service_tool
+```python
+tool_call(company_name='\u4e0a\u6d77\u6668\u5149\u6587\u5177\u80a1\u4efd\u6709\u9650\u516c\u53f8', prosecute_year='2020\u5e74')
+``` """
+    print(parse_and_call_function(docstring, legal_info_tools))
