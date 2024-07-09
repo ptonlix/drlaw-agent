@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
-from drlaw_agent.agents.master import DrlawAgent
-from drlaw_agent.utils import read_jsonl
+from drlaw_agent_a.agents.master import DrlawAgent
+from drlaw_agent_a.utils import read_jsonl
 from tqdm import tqdm
 import asyncio
 import json

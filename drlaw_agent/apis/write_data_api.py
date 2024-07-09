@@ -1,10 +1,10 @@
-from typing import List, Dict
 import requests
-from drlaw_agent.apis.base import DOMAIN, headers
+from drlaw_agent.apis.base import DOMAIN, headers, record_call
 import docx
 import io
 
 
+@record_call
 def save_dict_list_to_word(company_name: str, dict_list: str) -> str:
     """
     通过传入结构化信息，制作生成公司数据报告
@@ -50,6 +50,7 @@ def save_dict_list_to_word(company_name: str, dict_list: str) -> str:
     return text_string
 
 
+@record_call
 def get_citizens_sue_citizens(info: dict) -> str:
     """
     民事起诉状(公民起诉公民)
@@ -97,6 +98,7 @@ def get_citizens_sue_citizens(info: dict) -> str:
     return rsp_obj
 
 
+@record_call
 def get_company_sue_citizens(info: dict) -> str:
     """
     民事起诉状(公司起诉公民)
@@ -141,6 +143,7 @@ def get_company_sue_citizens(info: dict) -> str:
     return rsp_obj
 
 
+@record_call
 def get_citizens_sue_company(info: dict) -> str:
     """
     民事起诉状(公民起诉公司)
@@ -185,6 +188,7 @@ def get_citizens_sue_company(info: dict) -> str:
     return rsp_obj
 
 
+@record_call
 def get_company_sue_company(info: dict) -> str:
     """
     民事起诉状(公司起诉公司)

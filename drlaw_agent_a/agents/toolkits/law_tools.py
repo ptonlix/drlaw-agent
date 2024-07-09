@@ -1,7 +1,7 @@
 from langchain.pydantic_v1 import BaseModel, Field
 from langchain_core.tools import StructuredTool
 
-from drlaw_agent.services.law_service import (
+from drlaw_agent_a.services.law_service import (
     get_amount_involved_by_case_num_service,
     get_legal_document_service,
     count_case_number_by_cause_service,

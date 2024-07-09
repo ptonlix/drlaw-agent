@@ -1,7 +1,7 @@
 from langchain.pydantic_v1 import BaseModel, Field
 from langchain_core.tools import StructuredTool
 
-from drlaw_agent.services.company_info_service import (
+from drlaw_agent_a.services.company_info_service import (
     get_company_info_service,
     count_company_by_industry_service,
     search_company_name_by_info_service,
@@ -44,6 +44,3 @@ com_info_tools = [
     get_company_counter_by_industry,
     get_company_name_retriever_by_info,
 ]
-
-if __name__ == "__main__":
-    print(get_company_info_service("深圳市劲拓自动化设备有限公司"))

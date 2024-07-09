@@ -2,19 +2,20 @@ from drlaw_agent.agents.utils.views import print_agent_output
 import jsonlines
 
 
-class PublisherAgent:
+class ErrorerAgent:
     """
-    客户:将问题答案答复客户
+    错误信息助理:
+    记录各类异常信息
     """
 
     def __init__(self):
         pass
 
     async def run(self, drlaw_state: dict):
-        print_agent_output("客服助理正在将问题答案答复客户", agent="PUBLISHER")
+        print_agent_output("错误信息助理正在输出错误信息", agent="ERRORER")
         print(drlaw_state)
 
-        task = research_state.get("task")
+        # task = research_state.get("task")
         # errlog = task.get("errlog")
         # result_output_dir = task.get("result_output_dir")
         # answer = research_state.get("answer")

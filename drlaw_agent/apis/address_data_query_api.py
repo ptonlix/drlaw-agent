@@ -1,8 +1,9 @@
 from typing import List, Dict
 import requests
-from drlaw_agent.apis.base import DOMAIN, headers
+from drlaw_agent.apis.base import DOMAIN, headers, record_call
 
 
+@record_call
 def get_address_info(
     query_conds: Dict[str, str], need_fields: List[str] = []
 ) -> List[dict]:
@@ -34,6 +35,7 @@ def get_address_info(
     return rsp_obj
 
 
+@record_call
 def get_address_code(
     query_conds: Dict[str, str], need_fields: List[str] = []
 ) -> List[dict]:
@@ -66,6 +68,7 @@ def get_address_code(
     return rsp_obj
 
 
+@record_call
 def get_temp_info(
     query_conds: Dict[str, str], need_fields: List[str] = []
 ) -> List[dict]:

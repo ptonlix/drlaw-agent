@@ -1,21 +1,21 @@
 from langgraph.graph import StateGraph, END
-from drlaw_agent.agents import publisher
-from drlaw_agent.agents.utils.views import print_agent_output
-from drlaw_agent.memory.research import ResearchState
+from drlaw_agent_a.agents import publisher
+from drlaw_agent_a.agents.utils.views import print_agent_output
+from drlaw_agent_a.memory.research import ResearchState
 
 # Import agent classes
-from drlaw_agent.agents.executor import (
+from drlaw_agent_a.agents.executor import (
     ExecutorAgent,
 )
 
-from drlaw_agent.agents.toolselect import (
+from drlaw_agent_a.agents.toolselect import (
     ToolSelectAgent,
 )
-from drlaw_agent.agents.publisher import (
+from drlaw_agent_a.agents.publisher import (
     PublisherAgent,
 )
-from drlaw_agent.agents.answer import AnswerAgent
-from drlaw_agent.agents.reviewer import ReviewerAgent
+from drlaw_agent_a.agents.answer import AnswerAgent
+from drlaw_agent_a.agents.reviewer import ReviewerAgent
 
 
 def check_execution_effect(research_state: dict):

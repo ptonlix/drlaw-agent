@@ -1,9 +1,9 @@
 import json
-from drlaw_agent.apis import (
+from drlaw_agent_a.apis import (
     get_company_info,
     search_company_name_by_info,
 )
-from drlaw_agent.services.base import re_get_full_name, _get_full_name
+from drlaw_agent_a.services.base import re_get_full_name, _get_full_name
 
 
 def get_company_info_service(company_name: str) -> str:

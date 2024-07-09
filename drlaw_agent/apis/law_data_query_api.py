@@ -1,8 +1,9 @@
 from typing import List, Dict
 import requests
-from drlaw_agent.apis.base import DOMAIN, headers
+from drlaw_agent.apis.base import DOMAIN, headers, record_call
 
 
+@record_call
 def get_legal_document(
     query_conds: Dict[str, str], need_fields: List[str] = []
 ) -> List[dict]:
@@ -43,6 +44,7 @@ def get_legal_document(
     return rsp_obj
 
 
+@record_call
 def get_legal_document_list(
     query_conds: Dict[str, str], need_fields: List[str] = []
 ) -> List[dict]:
@@ -83,6 +85,7 @@ def get_legal_document_list(
     return rsp_obj
 
 
+@record_call
 def get_court_info(
     query_conds: Dict[str, str], need_fields: List[str] = []
 ) -> List[dict]:
@@ -116,6 +119,7 @@ def get_court_info(
     return rsp_obj
 
 
+@record_call
 def get_court_code(
     query_conds: Dict[str, str], need_fields: List[str] = []
 ) -> List[dict]:
@@ -150,6 +154,7 @@ def get_court_code(
     return rsp_obj
 
 
+@record_call
 def get_lawfirm_info(
     query_conds: Dict[str, str], need_fields: List[str] = []
 ) -> List[dict]:
@@ -187,6 +192,7 @@ def get_lawfirm_info(
     return rsp_obj
 
 
+@record_call
 def get_lawfirm_log(
     query_conds: Dict[str, str], need_fields: List[str] = []
 ) -> List[dict]:
@@ -220,6 +226,7 @@ def get_lawfirm_log(
     return rsp_obj
 
 
+@record_call
 def get_legal_abstract(
     query_conds: Dict[str, str], need_fields: List[str] = []
 ) -> List[dict]:
@@ -251,6 +258,7 @@ def get_legal_abstract(
     return rsp_obj
 
 
+@record_call
 def get_xzgxf_info(
     query_conds: Dict[str, str], need_fields: List[str] = []
 ) -> List[dict]:
@@ -287,6 +295,7 @@ def get_xzgxf_info(
     return rsp_obj
 
 
+@record_call
 def get_xzgxf_info_list(
     query_conds: Dict[str, str], need_fields: List[str] = []
 ) -> List[dict]:

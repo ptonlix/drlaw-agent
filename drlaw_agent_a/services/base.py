@@ -1,4 +1,4 @@
-from drlaw_agent.apis import search_company_name_by_info, get_company_info
+from drlaw_agent_a.apis import search_company_name_by_info, get_company_info
 from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import ChatPromptTemplate

@@ -1,11 +1,11 @@
 import json
-from drlaw_agent.apis import (
+from drlaw_agent_a.apis import (
     get_company_register,
     search_company_name_by_register,
     search_company_and_registered_capital_by_industry,
 )
-from drlaw_agent.utils import convert_to_float
-from drlaw_agent.services.base import re_get_full_name, _get_full_name
+from drlaw_agent_a.utils import convert_to_float
+from drlaw_agent_a.services.base import re_get_full_name, _get_full_name
 
 
 def get_company_register_service(company_name: str) -> str:

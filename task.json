@@ -1,11 +1,10 @@
 {
   "index": 1,
-  "query": "通过案号(2019)鄂0103民初12292号，可否请您协助查询一下该判决所依据的法律条文？",
+  "query": "91310000677833266F的公司全称是？该公司的涉案次数为？（起诉日期在2020年）作为被起诉人的次数及总金额为？",
   "model": "glm-4-0520",
   "temperature": 0.1,
   "recursion_limit": 20,
   "errlog": "./log",
   "result_output_dir": "./dataset",
-  "question_file": "./dataset/question.jsonl",
   "verbose": true
 }

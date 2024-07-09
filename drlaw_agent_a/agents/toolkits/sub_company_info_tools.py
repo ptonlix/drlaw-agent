@@ -1,7 +1,7 @@
 from langchain.pydantic_v1 import BaseModel, Field
 from langchain_core.tools import StructuredTool
 
-from drlaw_agent.services.sub_company_info_service import (
+from drlaw_agent_a.services.sub_company_info_service import (
     get_parent_company_info_service,
     get_sub_company_name_service,
     count_sub_company_service,

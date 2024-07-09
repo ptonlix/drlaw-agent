@@ -2,17 +2,17 @@ from drlaw_agent.agents.utils.views import print_agent_output
 import jsonlines
 
 
-class ReporterAgent:
+class IndictmenterAgent:
     """
-    公司数据报告写作助理:
-    能够根据要求收集公司的数据，写作这个公司数据整合报告
+    起诉状写作助理:
+    能根据针对公民起诉公民、公民起诉公司、公司起诉公民、公司起诉公司四种场景写作不同的起诉状
     """
 
     def __init__(self):
         pass
 
     async def run(self, drlaw: dict):
-        print_agent_output("公司数据报告写作助理正在编写起诉状", agent="REPORTER")
+        print_agent_output("起诉状写作助理正在编写起诉状", agent="INDICTMENTER")
         # 提取问题中关键信息
         # 调用工具获取信息
         # 返回起诉状字符串

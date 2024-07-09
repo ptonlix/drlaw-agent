@@ -8,7 +8,7 @@ from typing import List
 from langchain_openai import ChatOpenAI
 from langchain.schema.output_parser import StrOutputParser
 from langchain_core.tools import BaseTool
-from drlaw_agent.agents.toolkits import (
+from drlaw_agent_a.agents.toolkits import (
     com_info_tools,
     com_register_tools,
     sub_com_info_tools,

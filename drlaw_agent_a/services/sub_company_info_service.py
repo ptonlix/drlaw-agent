@@ -1,11 +1,15 @@
 import json
 
-from drlaw_agent.apis import (
+from drlaw_agent_a.apis import (
     get_listed_company_info,
     search_company_name_by_super_info,
 )
-from drlaw_agent.utils import convert_to_float, convert_to_str, intersection_dict_lists
-from drlaw_agent.services.base import re_get_full_name, _get_full_name
+from drlaw_agent_a.utils import (
+    convert_to_float,
+    convert_to_str,
+    intersection_dict_lists,
+)
+from drlaw_agent_a.services.base import re_get_full_name, _get_full_name
 
 
 def get_holding_sub_company(company_name: str) -> str:

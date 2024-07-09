@@ -1,8 +1,9 @@
 from typing import List, Dict
 import requests
-from drlaw_agent.apis.base import DOMAIN, headers
+from drlaw_agent.apis.base import DOMAIN, headers, record_call, CallLogger
 
 
+@record_call
 def get_company_info(
     query_conds: Dict[str, str], need_fields: List[str] = []
 ) -> List[dict]:
@@ -61,6 +62,7 @@ def get_company_info(
     return rsp_obj
 
 
+@record_call
 def get_company_register(
     query_conds: Dict[str, str], need_fields: List[str] = []
 ) -> List[dict]:
@@ -109,6 +111,7 @@ def get_company_register(
     return rsp_obj
 
 
+@record_call
 def get_company_register_name(
     query_conds: Dict[str, str], need_fields: List[str] = []
 ) -> List[dict]:
@@ -140,6 +143,7 @@ def get_company_register_name(
     return rsp_obj
 
 
+@record_call
 def get_sub_company_info(
     query_conds: Dict[str, str], need_fields: List[str] = []
 ) -> List[dict]:
@@ -177,6 +181,7 @@ def get_sub_company_info(
     return rsp_obj
 
 
+@record_call
 def get_sub_company_info_list(
     query_conds: Dict[str, str], need_fields: List[str] = []
 ) -> List[dict]:
@@ -245,3 +250,15 @@ if __name__ == "__main__":
             need_fields=["公司名称", "上市公司投资金额"],
         )
     )
+    print(
+        get_sub_company_info_list(
+            query_conds={"关联上市公司全称": "上海航天汽车机电股份有限公司"},
+            need_fields=["公司名称", "上市公司投资金额"],
+        )
+    )
+
+    logger = CallLogger()
+    print("Call Sequence:", logger.get_call_sequence())
+    print("Call Count:", logger.get_call_count())
+    print("Total Calls:", logger.get_total_calls())
+    print("Call Type:", logger.get_call_types())

@@ -138,7 +138,7 @@ def get_legal_document_about_company_service(company_name: str) -> List[dict]:
 
 def get_legal_document_about_accused_service(
     company_name: str, prosecute_year: str = ""
-) -> List[dict]:
+) -> str:
     """
     根据公司名称、上市公司名称、公司简称、公司代码和统一信用代码查询该公司参与的案件中作为被起诉人的数据信息
     year 表示筛选出在特定起诉(立案)年份的数据,如"2020年"
@@ -170,7 +170,7 @@ def get_legal_document_about_accused_service(
 
 def get_legal_document_about_amount_service(
     company_name: str, maximum: str = "-1", minimum: str = "-1"
-) -> List[dict]:
+) -> str:
     """
     根据公司名称、上市公司名称、公司简称、公司代码和统一信用代码查询该公司的关联的所有裁判文书信息中涉案金额大于minimum小于maximum的案件信息
     """
@@ -206,9 +206,9 @@ def get_legal_document_about_amount_service(
 
 
 if __name__ == "__main__":
-    print(get_legal_document_service("（2019）沪0115民初61975号"))
+    # print(get_legal_document_service("（2019）沪0115民初61975号"))
     # print(get_legal_abstract_service("（2019）沪0115民初61975号"))
-    # print(get_legal_document_about_company_service("上海晨光文具股份有限公司"))
-    print(
-        get_legal_document_about_accused_service("上海晨光文具股份有限公司", "2020年")
-    )
+    print(get_legal_document_about_company_service("浙江晨丰科技股份有限公司"))
+    # print(
+    #     get_legal_document_about_accused_service("上海晨光文具股份有限公司", "2020年")
+    # )

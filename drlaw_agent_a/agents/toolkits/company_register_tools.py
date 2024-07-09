@@ -1,7 +1,7 @@
 from langchain.pydantic_v1 import BaseModel, Field
 from langchain_core.tools import StructuredTool
 
-from drlaw_agent.services.company_register_service import (
+from drlaw_agent_a.services.company_register_service import (
     get_company_register_service,
     search_company_name_by_registration_number_service,
     search_company_name_by_register_service,

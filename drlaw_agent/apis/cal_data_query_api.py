@@ -1,8 +1,9 @@
-from typing import List, Dict, Any
+from typing import List, Any
 import requests
-from drlaw_agent.apis.base import DOMAIN, headers
+from drlaw_agent.apis.base import DOMAIN, headers, record_call
 
 
+@record_call
 def get_sum(nums: List[str | float | int]) -> float:
     """
     求和方法，可以对传入的int、float、str数组进行求和，str数组只能转换字符串里的千万亿，如"1万"
@@ -26,6 +27,7 @@ def get_sum(nums: List[str | float | int]) -> float:
     return rsp_obj
 
 
+@record_call
 def lawrank(keys: List[Any], values: List[float]) -> float:
     """
     排序接口，返回按照values排序的keys,此排序为升序排序

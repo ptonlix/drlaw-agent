@@ -3,13 +3,19 @@ from enum import Enum
 
 
 class AgentColor(Enum):
-    TOOLSELECT = Fore.LIGHTBLUE_EX
-    EXECUTOR = Fore.YELLOW
-    ANSWERER = Fore.LIGHTGREEN_EX
+    ASSISTANT = Fore.LIGHTBLUE_EX
+    COMPANYER = Fore.YELLOW
+    LEGALER = Fore.LIGHTGREEN_EX
+    ADDRESSER = Fore.CYAN
+    APIER = Fore.BLUE
+    COURTER = Fore.GREEN
+    LAWFIRMER = Fore.LIGHTBLUE_EX
+    XZGXFER = Fore.LIGHTYELLOW_EX
+    INDICTMENTER = Fore.LIGHTCYAN_EX
+    REPORTER = Fore.LIGHTBLUE_EX
+    ERRORER = Fore.RED
     PUBLISHER = Fore.MAGENTA
-    REVIEWER = Fore.CYAN
     MASTER = Fore.LIGHTYELLOW_EX
-    PROSECUTER = Fore.BLUE
 
 
 def print_agent_output(output: str, agent: str = "RESEARCHER"):

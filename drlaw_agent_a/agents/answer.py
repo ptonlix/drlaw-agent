@@ -2,7 +2,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.schema.output_parser import StrOutputParser
 from datetime import datetime
-from drlaw_agent.agents.utils.views import print_agent_output
+from drlaw_agent_a.agents.utils.views import print_agent_output
 
 
 class AnswerAgent:

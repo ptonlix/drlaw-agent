@@ -7,7 +7,7 @@ from typing import List
 from datetime import datetime
 import importlib
 from colorama import Fore, Style
-from drlaw_agent.agents.utils.views import print_agent_output
+from drlaw_agent_a.agents.utils.views import print_agent_output
 
 
 class ExecutorAgent:

@@ -1,5 +1,5 @@
 import json
-from drlaw_agent.apis import (
+from drlaw_agent_a.apis import (
     get_legal_document,
     search_case_num_by_legal_document,
 )
