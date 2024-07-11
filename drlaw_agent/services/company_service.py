@@ -139,6 +139,28 @@ def _add_investment_amount(amount: List[str]) -> float:
     return get_sum(amount)
 
 
+def get_sub_company_info_list_service_for_report(company_name: str) -> str:
+    """
+    根据公司名称、上市公司名称、公司简称、公司代码和统一信用代码查询该公司的子公司信息详情
+    """
+
+    # 定义一个查询条件的列表，包含所有可能的查询条件
+    query_conditions = [
+        {"关联上市公司全称": company_name},
+        {"关联上市公司全称": get_company_name_service(company_name)},
+    ]
+
+    # 遍历所有查询条件，尝试获取公司信息
+    for query in query_conditions:
+        company_info = get_sub_company_info_list(query_conds=query, need_fields=[])
+        if company_info:
+            # 如果找到了公司信息，返回序列化后的JSON字符串
+            return json.dumps(company_info, ensure_ascii=False)
+
+    # 如果没有找到任何信息，返回错误消息
+    return f"查找不到该公司 {company_name} 的基本信息"
+
+
 def get_sub_company_info_list_service(company_name: str) -> str:
     """
     根据公司名称、上市公司名称、公司简称、公司代码和统一信用代码查询该公司的子公司信息详情

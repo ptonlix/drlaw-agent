@@ -15,6 +15,7 @@ class LegalerAgent:
 
     def __init__(self):
         self.memory = MemorySaver()
+        self.recursion_limit = 5  # 控制函数调用异常的递归参数
 
     async def run(self, drlaw_state: dict):
         print_agent_output("案件信息助理正在查询信息", agent="LEGALER")
@@ -52,20 +53,25 @@ class LegalerAgent:
             checkpointer=self.memory,
         )
 
-        try:
+        async def recursive_invoke(query, recursion_depth=0):
+            if recursion_depth > self.recursion_limit:
+                raise Exception("超出递归调用限制")
+
             config = {
                 "configurable": {"thread_id": query},
                 "recursion_limit": recursion_limit,
             }
             messages = app.invoke({"messages": [("human", query)]}, config=config)
             answer = messages["messages"][-1].content
+
             if "tool_call" in answer:
                 tool_result = parse_and_call_function(answer, legal_info_tools)
-                messages = app.invoke(
-                    {"messages": [("human", tool_result)]}, config=config
-                )
-                answer = messages["messages"][-1].content
-                raise Exception(answer)
+                return await recursive_invoke(tool_result, recursion_depth + 1)
+
+            return answer
+
+        try:
+            answer = await recursive_invoke(query)
             return {
                 "messages": [
                     (
@@ -76,9 +82,11 @@ class LegalerAgent:
                 "agent_type": "客服助理",
             }
         except Exception as e:
-            print(f"{Fore.RED}Error in answer questiong {query}: {e}{Style.RESET_ALL}")
+            print(
+                f"{Fore.RED}Error in answering question {query}: {e}{Style.RESET_ALL}"
+            )
             agent_info = f"{self.__class__.__name__}出错:\n {query}: {e}"
             return {
-                "messages": [("ai", agent_info)],
+                "messages": [("human", agent_info)],
                 "agent_type": "错误信息助理",
             }

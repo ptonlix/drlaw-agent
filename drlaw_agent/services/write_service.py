@@ -5,7 +5,10 @@ from drlaw_agent.apis.write_data_api import (
     get_company_sue_citizens,
     get_company_sue_company,
 )
-from drlaw_agent.services.company_service import get_company_register_service
+from drlaw_agent.services.company_service import (
+    get_company_info_service,
+    get_company_register_service,
+)
 from drlaw_agent.services.lawfirm_service import get_lawfirm_info_service
 from drlaw_agent.services.court_service import get_court_info_service
 import json
@@ -54,7 +57,7 @@ def get_citizens_sue_citizens_service(
 ):
     """
     公民起诉公民的诉讼状生成接口
-    通过传入原告法人的公司名称、被告法人的公司名称、原告诉讼律师、被告诉讼律师、诉讼法院和宿舍时间，生成民事起诉状。
+    通过传入原告法人的公司名称、被告法人的公司名称、原告诉讼律师、被告诉讼律师、诉讼法院和起诉时间，生成民事起诉状。
     例子：
         输入：
         {
@@ -75,9 +78,25 @@ def get_citizens_sue_citizens_service(
         plaintiff_company_info = json.loads(
             get_company_register_service(plaintiff_company)
         )[0]
+        try:
+            # 获取上市公司信息
+            plaintiff_company_info_up = json.loads(
+                get_company_info_service(plaintiff_company)
+            )[0]
+        except Exception:
+            plaintiff_company_info_up = {}
+
         accuser_company_info = json.loads(
             get_company_register_service(accuser_company)
         )[0]
+        try:
+            # 获取上市公司信息
+            accuser_company_info_up = json.loads(
+                get_company_info_service(accuser_company)
+            )[0]
+        except Exception:
+            accuser_company_info_up = {}
+
         plaintiff_lawyer_info = json.loads(get_lawfirm_info_service(plaintiff_lawyer))[
             0
         ]
@@ -86,22 +105,34 @@ def get_citizens_sue_citizens_service(
         time_info = time
 
         palyload = {
-            "原告": plaintiff_company_info.get("法定代表人"),
+            "原告": plaintiff_company_info.get("法定代表人")
+            + ";"
+            + plaintiff_company_info_up.get("法人代表", ""),
             "原告性别": "男",
             "原告生日": "1976-10-2",
             "原告民族": "汉",
             "原告工作单位": plaintiff_company_info.get("公司名称"),
-            "原告地址": plaintiff_company_info.get("企业地址"),
-            "原告联系方式": plaintiff_company_info.get("联系电话"),
+            "原告地址": plaintiff_company_info.get("企业地址")
+            + ";"
+            + plaintiff_company_info_up.get("办公地址", ""),
+            "原告联系方式": plaintiff_company_info.get("联系电话")
+            + ";"
+            + plaintiff_company_info_up.get("联系电话", ""),
             "原告委托诉讼代理人": plaintiff_lawyer_info.get("律师事务所名称"),
             "原告委托诉讼代理人联系方式": plaintiff_lawyer_info.get("通讯电话"),
-            "被告": accuser_company_info.get("法定代表人"),
+            "被告": accuser_company_info.get("法定代表人")
+            + ";"
+            + accuser_company_info_up.get("法人代表", ""),
             "被告性别": "女",
             "被告生日": "1975-02-12",
             "被告民族": "汉",
             "被告工作单位": accuser_company_info.get("公司名称"),
-            "被告地址": accuser_company_info.get("企业地址"),
-            "被告联系方式": accuser_company_info.get("联系电话"),
+            "被告地址": accuser_company_info.get("企业地址")
+            + ";"
+            + accuser_company_info_up.get("办公地址", ""),
+            "被告联系方式": accuser_company_info.get("联系电话")
+            + ";"
+            + accuser_company_info_up.get("联系电话", ""),
             "被告委托诉讼代理人": accuser_lawyer_info.get("律师事务所名称"),
             "被告委托诉讼代理人联系方式": accuser_lawyer_info.get("通讯电话"),
             "诉讼请求": claim,
@@ -114,7 +145,8 @@ def get_citizens_sue_citizens_service(
         result = get_citizens_sue_citizens(palyload)
         return result
 
-    except Exception:
+    except Exception as e:
+        print(e)
         return ""
 
 
@@ -131,7 +163,7 @@ def get_citizens_sue_company_service(
 ):
     """
     公民起诉公司的诉讼状生成接口
-    通过传入原告法人的公司名称、被告的公司名称、原告诉讼律师、被告诉讼律师、诉讼法院和宿舍时间，生成民事起诉状。
+    通过传入原告法人的公司名称、被告的公司名称、原告诉讼律师、被告诉讼律师、诉讼法院和起诉时间，生成民事起诉状。
     例子：
         输入：
         {
@@ -152,9 +184,25 @@ def get_citizens_sue_company_service(
         plaintiff_company_info = json.loads(
             get_company_register_service(plaintiff_company)
         )[0]
+        try:
+            # 获取上市公司信息
+            plaintiff_company_info_up = json.loads(
+                get_company_info_service(plaintiff_company)
+            )[0]
+        except Exception:
+            plaintiff_company_info_up = {}
+
         accuser_company_info = json.loads(
             get_company_register_service(accuser_company)
         )[0]
+        try:
+            # 获取上市公司信息
+            accuser_company_info_up = json.loads(
+                get_company_info_service(accuser_company)
+            )[0]
+        except Exception:
+            accuser_company_info_up = {}
+
         plaintiff_lawyer_info = json.loads(get_lawfirm_info_service(plaintiff_lawyer))[
             0
         ]
@@ -162,19 +210,31 @@ def get_citizens_sue_company_service(
         court_info = json.loads(get_court_info_service(court))[0]
         time_info = time
         palyload = {
-            "原告": plaintiff_company_info.get("法定代表人"),
+            "原告": plaintiff_company_info.get("法定代表人")
+            + ";"
+            + plaintiff_company_info_up.get("法人代表", ""),
             "原告性别": "男",
             "原告生日": "1976-10-2",
             "原告民族": "汉",
             "原告工作单位": plaintiff_company_info.get("公司名称"),
-            "原告地址": plaintiff_company_info.get("企业地址"),
-            "原告联系方式": plaintiff_company_info.get("联系电话"),
+            "原告地址": plaintiff_company_info.get("企业地址")
+            + ";"
+            + plaintiff_company_info_up.get("办公地址", ""),
+            "原告联系方式": plaintiff_company_info.get("联系电话")
+            + ";"
+            + plaintiff_company_info_up.get("联系电话", ""),
             "原告委托诉讼代理人": plaintiff_lawyer_info.get("律师事务所名称"),
             "原告委托诉讼代理人联系方式": plaintiff_lawyer_info.get("通讯电话"),
             "被告": accuser_company_info.get("公司名称"),
-            "被告地址": accuser_company_info.get("企业地址"),
-            "被告法定代表人": accuser_company_info.get("法定代表人"),
-            "被告联系方式": accuser_company_info.get("联系电话"),
+            "被告地址": accuser_company_info.get("企业地址")
+            + ";"
+            + accuser_company_info_up.get("办公地址", ""),
+            "被告法定代表人": accuser_company_info.get("法定代表人")
+            + ";"
+            + accuser_company_info_up.get("法人代表", ""),
+            "被告联系方式": accuser_company_info.get("联系电话")
+            + ";"
+            + accuser_company_info_up.get("联系电话", ""),
             "被告委托诉讼代理人": accuser_lawyer_info.get("律师事务所名称"),
             "被告委托诉讼代理人联系方式": accuser_lawyer_info.get("通讯电话"),
             "诉讼请求": claim,
@@ -204,7 +264,7 @@ def get_company_sue_citizens_service(
 ):
     """
     公民起诉公司的诉讼状生成接口
-    通过传入原告公司名称、被告法人的公司名称、原告诉讼律师、被告诉讼律师、诉讼法院和宿舍时间，生成民事起诉状。
+    通过传入原告公司名称、被告法人的公司名称、原告诉讼律师、被告诉讼律师、诉讼法院和起诉时间，生成民事起诉状。
     例子：
         输入：
         {
@@ -225,9 +285,24 @@ def get_company_sue_citizens_service(
         plaintiff_company_info = json.loads(
             get_company_register_service(plaintiff_company)
         )[0]
+        try:
+            # 获取上市公司信息
+            plaintiff_company_info_up = json.loads(
+                get_company_info_service(plaintiff_company)
+            )[0]
+        except Exception:
+            plaintiff_company_info_up = {}
+
         accuser_company_info = json.loads(
             get_company_register_service(accuser_company)
         )[0]
+        try:
+            # 获取上市公司信息
+            accuser_company_info_up = json.loads(
+                get_company_info_service(accuser_company)
+            )[0]
+        except Exception:
+            accuser_company_info_up = {}
         plaintiff_lawyer_info = json.loads(get_lawfirm_info_service(plaintiff_lawyer))[
             0
         ]
@@ -246,18 +321,30 @@ def get_company_sue_citizens_service(
         """
         palyload = {
             "原告": plaintiff_company_info.get("公司名称"),
-            "原告地址": plaintiff_company_info.get("企业地址"),
-            "原告法定代表人": plaintiff_company_info.get("法定代表人"),
-            "原告联系方式": plaintiff_company_info.get("联系电话"),
+            "原告地址": plaintiff_company_info.get("企业地址")
+            + ";"
+            + plaintiff_company_info_up.get("办公地址", ""),
+            "原告法定代表人": plaintiff_company_info.get("法定代表人")
+            + ";"
+            + plaintiff_company_info_up.get("法人代表", ""),
+            "原告联系方式": plaintiff_company_info.get("联系电话")
+            + ";"
+            + plaintiff_company_info_up.get("联系电话", ""),
             "原告委托诉讼代理人": plaintiff_lawyer_info.get("律师事务所名称"),
             "原告委托诉讼代理人联系方式": plaintiff_lawyer_info.get("通讯电话"),
-            "被告": accuser_company_info.get("法定代表人"),
+            "被告": accuser_company_info.get("法定代表人")
+            + ";"
+            + accuser_company_info_up.get("法人代表", ""),
             "被告性别": "女",
             "被告生日": "1975-02-12",
             "被告民族": "汉",
             "被告工作单位": accuser_company_info.get("公司名称"),
-            "被告地址": accuser_company_info.get("企业地址"),
-            "被告联系方式": accuser_company_info.get("联系电话"),
+            "被告地址": accuser_company_info.get("企业地址")
+            + ";"
+            + accuser_company_info_up.get("办公地址", ""),
+            "被告联系方式": accuser_company_info.get("联系电话")
+            + ";"
+            + accuser_company_info_up.get("联系电话", ""),
             "被告委托诉讼代理人": accuser_lawyer_info.get("律师事务所名称"),
             "被告委托诉讼代理人联系方式": accuser_lawyer_info.get("通讯电话"),
             "诉讼请求": claim,
@@ -287,7 +374,7 @@ def get_company_sue_company_service(
 ):
     """
     公民起诉公司的诉讼状生成接口
-    通过传入原告公司名称、被告公司名称、原告诉讼律师、被告诉讼律师、诉讼法院和宿舍时间，生成民事起诉状。
+    通过传入原告公司名称、被告公司名称、原告诉讼律师、被告诉讼律师、诉讼法院和起诉时间，生成民事起诉状。
     例子：
         输入：
         {
@@ -308,9 +395,24 @@ def get_company_sue_company_service(
         plaintiff_company_info = json.loads(
             get_company_register_service(plaintiff_company)
         )[0]
+        try:
+            # 获取上市公司信息
+            plaintiff_company_info_up = json.loads(
+                get_company_info_service(plaintiff_company)
+            )[0]
+        except Exception:
+            plaintiff_company_info_up = {}
+
         accuser_company_info = json.loads(
             get_company_register_service(accuser_company)
         )[0]
+        try:
+            # 获取上市公司信息
+            accuser_company_info_up = json.loads(
+                get_company_info_service(accuser_company)
+            )[0]
+        except Exception:
+            accuser_company_info_up = {}
         plaintiff_lawyer_info = json.loads(get_lawfirm_info_service(plaintiff_lawyer))[
             0
         ]
@@ -329,15 +431,27 @@ def get_company_sue_company_service(
         """
         palyload = {
             "原告": plaintiff_company_info.get("公司名称"),
-            "原告地址": plaintiff_company_info.get("企业地址"),
-            "原告法定代表人": plaintiff_company_info.get("法定代表人"),
-            "原告联系方式": plaintiff_company_info.get("联系电话"),
+            "原告地址": plaintiff_company_info.get("企业地址")
+            + ";"
+            + plaintiff_company_info_up.get("办公地址", ""),
+            "原告法定代表人": plaintiff_company_info.get("法定代表人")
+            + ";"
+            + plaintiff_company_info_up.get("法人代表", ""),
+            "原告联系方式": plaintiff_company_info.get("联系电话")
+            + ";"
+            + plaintiff_company_info_up.get("联系电话", ""),
             "原告委托诉讼代理人": plaintiff_lawyer_info.get("律师事务所名称"),
             "原告委托诉讼代理人联系方式": plaintiff_lawyer_info.get("通讯电话"),
             "被告": accuser_company_info.get("公司名称"),
-            "被告地址": accuser_company_info.get("企业地址"),
-            "被告法定代表人": accuser_company_info.get("法定代表人"),
-            "被告联系方式": accuser_company_info.get("联系电话"),
+            "被告地址": accuser_company_info.get("企业地址")
+            + ";"
+            + accuser_company_info_up.get("办公地址", ""),
+            "被告法定代表人": accuser_company_info.get("法定代表人")
+            + ";"
+            + accuser_company_info_up.get("法人代表", ""),
+            "被告联系方式": accuser_company_info.get("联系电话")
+            + ";"
+            + accuser_company_info_up.get("联系电话", ""),
             "被告委托诉讼代理人": accuser_lawyer_info.get("律师事务所名称"),
             "被告委托诉讼代理人联系方式": accuser_lawyer_info.get("通讯电话"),
             "诉讼请求": claim,

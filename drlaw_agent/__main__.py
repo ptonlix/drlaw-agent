@@ -28,16 +28,21 @@ async def main():
     task = open_task()
 
     question_file = task.get("question_file")
+    # workflow_pic = task.get("workflow_pic")
+    # if workflow_pic:
+    #     drlaw = DrlawAgent(task)
+    #     await drlaw.get_drlaw_agent_workflow()
+    #     return
     if question_file:
         queries = read_jsonl(question_file)
         for query in tqdm(queries):
             # 如果中断，可以从这里开始
-            if query["id"] < 211:
+            if query["id"] < 4:
                 continue
             task["index"] = query["id"]
             task["query"] = query["question"]
             drlaw = DrlawAgent(task)
-            await drlaw.run_drlaw_task()
+            await drlaw.run_drlaw_task(thread_id=task["index"])
             task = open_task()  # 状态初始化
     else:
         drlaw = DrlawAgent(task)

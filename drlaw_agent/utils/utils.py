@@ -95,19 +95,20 @@ def intersection_dict_lists(list1: list, list2: list) -> list:
 
 
 if __name__ == "__main__":
-    querys = read_jsonl("./dataset/question_example.json")
-    results = read_jsonl("./dataset/帝阅DeepRead_result.json")
-    for i, query in enumerate(results):
-        print(f"test{i}")
-        if i != results[i].get("id"):
-            results_id = results[i].get("id")
-            print(f"{i} {results_id}")
+    querys = read_jsonl("./dataset/question.jsonl")
+    # results = read_jsonl("./dataset/帝阅DeepRead_result.json")
+    # for i, query in enumerate(results):
+    #     print(f"test{i}")
+    #     if i != results[i].get("id"):
+    #         results_id = results[i].get("id")
+    #         print(f"{i} {results_id}")
 
     for i, query in enumerate(querys):
         content = {
             "id": query.get("id"),
             "question": query.get("question"),
-            "answer": results[i].get("answer"),
+            # "answer": results[i].get("answer"),
+            "answer": "",
         }
         with jsonlines.open("./dataset/DeepRead_result.json", "a") as json_file:
             json_file.write(content)

@@ -9,6 +9,7 @@ from drlaw_agent.agents.xzgxfer import XzgxferAgent
 from drlaw_agent.agents.addresser import AddresserAgent
 from drlaw_agent.agents.reporter import ReporterAgent
 from drlaw_agent.agents.indictmenter import IndictmenterAgent
+from drlaw_agent.agents.apier import ApiAgent
 from drlaw_agent.agents.errorer import ErrorerAgent
 from drlaw_agent.agents.utils.views import print_agent_output
 from drlaw_agent.agents.utils.model import AgentTypeService
@@ -37,6 +38,7 @@ class DrlawAgent:
         reporter_agent = ReporterAgent()
         indictmenter_agent = IndictmenterAgent()
         errorer_agent = ErrorerAgent()
+        apier_agent = ApiAgent()
 
         publisher_agent = PublisherAgent()
         # Define a Langchain StateGraph with the ResearchState
@@ -52,6 +54,7 @@ class DrlawAgent:
         workflow.add_node("addresser", addresser_agent.run)
         workflow.add_node("reporter", reporter_agent.run)
         workflow.add_node("indictmenter", indictmenter_agent.run)
+        workflow.add_node("apier", apier_agent.run)
         workflow.add_node("errorer", errorer_agent.run)
         workflow.add_node("publisher", publisher_agent.run)
 
@@ -71,6 +74,7 @@ class DrlawAgent:
         workflow.add_edge("addresser", "assistanter")
         workflow.add_edge("reporter", "assistanter")
         workflow.add_edge("indictmenter", "assistanter")
+        workflow.add_edge("apier", "assistanter")
 
         # set up start and end nodes
         workflow.add_edge("publisher", END)
@@ -84,7 +88,6 @@ class DrlawAgent:
         # compile the graph
         memory = MemorySaver()
         chain = research_team.compile(checkpointer=memory)
-
         print_agent_output(
             f"Starting the research process for query '{self.task.get('query')}'...",
             "MASTER",
@@ -93,3 +96,15 @@ class DrlawAgent:
             input={"task": self.task}, config={"configurable": {"thread_id": thread_id}}
         )
         return result
+
+    async def get_drlaw_agent_workflow(self):
+        # from IPython.display import Image, display
+        research_team = self.init_drlaw_team()
+        # compile the graph
+        memory = MemorySaver()
+        app = research_team.compile(checkpointer=memory)
+        image_path = "drlaw_agent_workflow_diagram.png"
+        # Save the image
+        with open(image_path, "wb") as image_file:
+            image_file.write(app.get_graph().draw_png())
+        print(f"Image saved to {image_path}")

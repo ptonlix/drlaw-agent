@@ -11,6 +11,40 @@ from datetime import datetime
 import json
 
 
+def get_xzgxf_info_service_for_report(legal_name: str) -> List[dict]:
+    """
+    根据案号查询限制高消费相关信息,包括"限制高消费企业名称"、"法定代表人" "申请人" "涉案金额" "执行法院" "立案日期" "限高发布日期"等信息
+    例子：
+        输入：
+        {legal_name:（2018）鲁0403执1281号}
+        返回：
+        {
+        "限制高消费企业名称": "枣庄西能新远大天然气利用有限公司",
+        "案号": "（2018）鲁0403执1281号",
+        "法定代表人": "高士其",
+        "申请人": "枣庄市人力资源和社会保障局",
+        "涉案金额": "12000",
+        "执行法院": "山东省枣庄市薛城区人民法院",
+        "立案日期": "2018-11-16 00:00:00",
+        "限高发布日期": "2019-02-13 00:00:00"
+        }
+    """
+    # 定义一个查询条件的列表，包含所有可能的查询条件
+    query_conditions = [
+        {"案号": legal_name},
+        {"案号": legal_name.replace("(", "（").replace(")", "）")},
+        {"案号": legal_name.replace("（", "(").replace("）", ")")},
+    ]
+
+    # 遍历所有查询条件，尝试获取公司信息
+    for query in query_conditions:
+        legal_info = get_xzgxf_info(query_conds=query, need_fields=[])
+        if legal_info:
+            return [legal_info]
+
+    return []
+
+
 def get_xzgxf_info_service(legal_name: str) -> str:
     """
     根据案号查询限制高消费相关信息,包括"限制高消费企业名称"、"法定代表人" "申请人" "涉案金额" "执行法院" "立案日期" "限高发布日期"等信息

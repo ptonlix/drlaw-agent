@@ -61,9 +61,9 @@ class LawfirmerAgent:
                 "agent_type": "客服助理",
             }
         except Exception as e:
-            print(f"{Fore.RED}Error in answer questiong {query}: {e}{Style.RESET_ALL}")
+            print(f"{Fore.RED}Error in answer question {query}: {e}{Style.RESET_ALL}")
             agent_info = f"{self.__class__.__name__}出错:\n {query}: {e}"
             return {
-                "messages": [("ai", agent_info)],
+                "messages": [("human", agent_info)],
                 "agent_type": "错误信息助理",
             }

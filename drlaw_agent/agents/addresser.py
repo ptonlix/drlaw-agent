@@ -64,6 +64,6 @@ class AddresserAgent:
             print(f"{Fore.RED}Error in answer questiong {query}: {e}{Style.RESET_ALL}")
             agent_info = f"{self.__class__.__name__}出错:\n {query}: {e}"
             return {
-                "messages": [("ai", agent_info)],
+                "messages": [("human", agent_info)],
                 "agent_type": "错误信息助理",
             }

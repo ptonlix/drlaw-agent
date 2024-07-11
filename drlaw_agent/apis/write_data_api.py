@@ -19,35 +19,40 @@ def save_dict_list_to_word(company_name: str, dict_list: str) -> str:
 
     url = f"https://{DOMAIN}/law_api/s1_b/save_dict_list_to_word"
 
-    print(dict_list)
     data = {"company_name": company_name, "dict_list": dict_list}
 
     rsp = requests.post(url, json=data, headers=headers)
-    # 使用 io.BytesIO 创建一个内存文件
-    memory_file = io.BytesIO(rsp.content)
-    # 使用 python-docx 从内存文件中读取文档
-    doc = docx.Document(memory_file)
+    rsp_obj = rsp.json()
 
-    # 提取文本
-    # 获取文档中的所有段落和表格
-    paragraphs = []
-    for para in doc.paragraphs:
-        paragraphs.append(para.text + "\n")
-    tables = []
-    for table in doc.tables:
-        table_str = []
-        for row in table.rows:
-            row_content = [cell.text for cell in row.cells]
-            table_str.append(" | ".join(row_content) + "\n")
-        tables.append("".join(table_str))
-    # 将提取的文本合并为一个字符串
-    text_string = ""
+    if isinstance(rsp_obj, dict):
+        return [rsp_obj]
+    return rsp_obj
 
-    assert len(paragraphs) == len(tables)
-    for i in range(len(paragraphs)):
-        text_string += paragraphs[i] + tables[i] + "\n"
+    # # 使用 io.BytesIO 创建一个内存文件
+    # memory_file = io.BytesIO(rsp.content)
+    # # 使用 python-docx 从内存文件中读取文档
+    # doc = docx.Document(memory_file)
 
-    return text_string
+    # # 提取文本
+    # # 获取文档中的所有段落和表格
+    # paragraphs = []
+    # for para in doc.paragraphs:
+    #     paragraphs.append(para.text + "\n")
+    # tables = []
+    # for table in doc.tables:
+    #     table_str = []
+    #     for row in table.rows:
+    #         row_content = [cell.text for cell in row.cells]
+    #         table_str.append(" | ".join(row_content) + "\n")
+    #     tables.append("".join(table_str))
+    # # 将提取的文本合并为一个字符串
+    # text_string = ""
+
+    # assert len(paragraphs) == len(tables)
+    # for i in range(len(paragraphs)):
+    #     text_string += paragraphs[i] + tables[i] + "\n"
+
+    # return text_string
 
 
 @record_call
